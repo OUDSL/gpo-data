@@ -20,11 +20,7 @@ def mainLinks():
 
     test = soup.findAll('input',{"name":"urlhid"})
 
-    numbers = []
     for i in test:
-        numbers.append(i)
-
-    for i in numbers:
         print mainURL+i.get('value').replace("amp;","")
         # level1(mainURL+i.get('value').replace("amp;",""))
     level1("https://www.gpo.gov/fdsys/browse/collection.action?collectionCode=CHRG&browsePath=112&isCollapsed=false&leafLevelBrowse=false")
@@ -117,32 +113,13 @@ def morePageLinks(url):
                 parseURL = urlparse(url)
                 id = parse_qs(parseURL.query)['packageId'][0]
                 modsURL =  "https://www.gpo.gov/fdsys/pkg/"+id+"/mods.xml"
-                print modsURL
+                modsParser(modsURL)
 
-
-
-
-#Work on getting mods links and store the title data for each mods link
-def modLinks(url):
-    # test = "https://www.gpo.gov/fdsys/search/pagedetails.action?collectionCode=CHRG&browsePath=114%2FHOUSE%2FCommission+on+Security+and+Cooperation+in+Europe&granuleId=CHRG-114hhrg98259&packageId=CHRG-114hhrg98259&fromBrowse=true"
-    test = url
-    r = urlopen(test)
-    soup = BeautifulSoup(r,'html.parser')
-
-    t = []
-    title =  soup.h3.getText().strip()
-    t = title.replace('\n','').split()
-    title = " ".join(t)
-    # print title
-
-    for i in soup('a'):
-        if i.getText()=="MODS":
-            jsonFile[title] = i['href']
-            # print title+" **|***|** "+i['href']
-            print i['href']
-    with open('result.json', 'a') as fp:
-        json.dump(jsonFile, fp)
-
-
+#Parses the mods.xml files
+def modsParser(url):
+    xmlURL = url
+    r = urlopen(xmlURL)
+    x = json.dumps(parse(r.read())).replace("@",'').replace("#",'')
+    print json.dumps(json.loads(x),indent=4)
 
 mainLinks()
