@@ -22,8 +22,8 @@ def mainLinks():
 
     for i in test:
         print mainURL+i.get('value').replace("amp;","")
-        # level1(mainURL+i.get('value').replace("amp;",""))
-    level1("https://www.gpo.gov/fdsys/browse/collection.action?collectionCode=CHRG&browsePath=112&isCollapsed=false&leafLevelBrowse=false")
+        level1(mainURL+i.get('value').replace("amp;",""))
+    # level1("https://www.gpo.gov/fdsys/browse/collection.action?collectionCode=CHRG&browsePath=112&isCollapsed=false&leafLevelBrowse=false")
 #****************************************************************************************************************#
 #Getting links for HOUSE || JOINT || SENATE
 def level1(url):
