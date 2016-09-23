@@ -88,5 +88,6 @@ def load_xml_json(xmlURL):
 
     data = json.dumps({'TAG':tag,'HELD_DATE':helddate,'URL':url,'PDF':pdf,'NAMES':namesList,'CONG_MEMBERS':congmemberList,'ORIGIN_INFO':origininfoList,'EXTENSIONS':extensionList,'TITLE_INFO':titleinfoList,'IDENTIFIER':identifier,'CONG_COMMITTEE':congcommitteeList,'WITNESS':witnessList}).replace('\\','')
 
-    # print data
+    print data
 
+load_xml_json("https://www.gpo.gov/fdsys/pkg/GPO-CHRG-105jhrg41800/mods.xml")

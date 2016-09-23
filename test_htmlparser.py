@@ -11,43 +11,29 @@ testURL="https://dev.libraries.ou.edu/api-dsl/data_store/data/congressional/hear
 r = s.get(testURL)
 rjson = r.json()
 pagecount = rjson['meta']['pages']
-flag=""
-print pagecount
+
+# print pagecount
 
 def htmlparser(testURL):
     r = s.get(testURL)
     rjson = r.json()
-    titleList=[]
-    dateList =[]
-    htmlList = []
-    tagLIST=[]
+    flag=""
     for x in rjson['results']:
         if type(x['HELD_DATE'])== list:
             # print x['HELD_DATE'][1]
-            dateList.append(x['HELD_DATE'][1])
+            helddate=x['HELD_DATE'][1]
         else:
-            # print x['HELD_DATE']
-            dateList.append(x['HELD_DATE'])
+            helddate=x['HELD_DATE']
 
+        tag = x['TAG']
+        url = x['URL']
+        title = x['TITLE_INFO'][0]['title']
 
-    for x in rjson['results']:
-        # print x['URL']
-        htmlList.append(x['URL'])
-
-    for x in rjson['results']:
-        for y in x['EXTENSIONS']:
-            if "searchtitle" in y:
-                # print y['searchtitle']
-                titleList.append(y['searchtitle'])
-
-    for x in rjson['results']:
-        # print x['TAG']
-        tagLIST.append(x['TAG'])
-
-    for i,url in enumerate(htmlList):
-        hd = datetime(int(dateList[i].split('-')[0]),int(dateList[i].split('-')[1]),int(dateList[i].split('-')[2]))
+        hd = datetime(int(helddate.split('-')[0]),int(helddate.split('-')[1]),int(helddate.split('-')[2]))
+        # print hd
         h_date = '{dt:%B} {dt.day}, {dt.year}'.format(dt=hd)
-        # print "TITLE : ",titleList[i]," DATE : ",h_date.upper()," URL : ",url
+
+        print "TITLE : ",title," DATE : ",h_date.upper()," URL : ",url
         try:
             soup = BeautifulSoup(s.get(url).text,'html.parser')
         except:
@@ -60,27 +46,16 @@ def htmlparser(testURL):
         requiredDataList = sent_tokenize(requiredData)
         print "NUMBER OF SENTENCES ---> ",len(requiredDataList),"\n"
         line_count=len(requiredDataList)
-        global flag
-        if line_count < 10 and flag != tagLIST[i]:
-            flag=tagLIST[i]
-            print json.dumps({'TAG':tagLIST[i],'LINE_COUNT': line_count,'TYPE': 'PDF','STATUS':'FAIL'})
+        if line_count < 10 and flag != tag:
+            flag=tag
+            print json.dumps({'TAG':tag,'LINE_COUNT': line_count,'TYPE': 'PDF','STATUS':'FAIL'})
         else:
-            if flag != tagLIST[i]:
-                flag = tagLIST[i]
-                print json.dumps({'TAG':tagLIST[i],'LINE_COUNT': line_count,'TYPE': 'TEXT','STATUS':'SUCCESS'})
+            if flag != tag:
+                flag = tag
+                print json.dumps({'TAG':tag,'LINE_COUNT': line_count,'TYPE': 'TEXT','STATUS':'SUCCESS'})
 
             for x in requiredDataList:
-                print json.dumps({'TAG': tagLIST[i],'DATA': x, 'TITLE': titleList[i],'HELD_DATE':dateList[i]})
-
-
-
+                print json.dumps({'TAG': tag,'DATA': x, 'TITLE': title,'HELD_DATE':helddate})
 
 for i in range(1,pagecount+1):
     htmlparser("https://dev.libraries.ou.edu/api-dsl/data_store/data/congressional/hearings/.json?page={0}".format(i))
-
-# htmlparser(testURL)
-
-
-
-
-
